@@ -1,0 +1,12 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# 让前端的 /api/scrape 也能访问到函数（可选的友好别名）
+[[redirects]]
+  from = "/api/scrape"
+  to = "/.netlify/functions/scrape"
+  status = 200
