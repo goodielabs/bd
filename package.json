@@ -1,9 +1,0 @@
-{
-  "name": "feishu-speaker-miner",
-  "version": "1.0.0",
-  "private": true,
-  "description": "抓取展会网站嘉宾信息并写入飞书多维表格",
-  "engines": {
-    "node": ">=18"
-  }
-}
