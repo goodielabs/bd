@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>展会嘉宾挖掘机 · 飞书直写</title>
+<style>
+  :root{
+    --bg:#0e1318; --surface:#161d25; --surface-2:#1d2630; --border:#2a343f;
+    --text:#e8eef4; --muted:#8c9aa8; --accent:#5ee6c4;
+    --warn:#ffb454; --danger:#ff6b6b; --radius:12px;
+    --mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Inter,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;
+    background-image:radial-gradient(900px 500px at 80% -10%, rgba(94,230,196,.07), transparent 60%);}
+  .wrap{max-width:980px;margin:0 auto;padding:40px 20px 80px}
+  .topbar{display:flex;justify-content:flex-end;margin-bottom:8px}
+  .lang{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-family:var(--mono);font-size:12px}
+  .lang button{background:transparent;color:var(--muted);border:none;padding:6px 12px;cursor:pointer}
+  .lang button.active{background:var(--accent);color:#04130f;font-weight:700}
+  header{margin-bottom:28px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+  h1{font-size:30px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--muted);margin:0;font-size:15px}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-top:20px}
+  label.field{display:block;font-size:13px;color:var(--muted);margin:0 0 7px;font-family:var(--mono);letter-spacing:.03em}
+  input[type=url]{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);
+    border-radius:9px;padding:13px 14px;font-size:15px;font-family:var(--mono);outline:none;transition:border-color .15s,box-shadow .15s}
+  input[type=url]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(94,230,196,.15)}
+  .opts{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;align-items:center}
+  .chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text);cursor:pointer;user-select:none}
+  .chk input{accent-color:var(--accent);width:16px;height:16px}
+  .hint{font-size:12px;color:var(--muted)}
+  .actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+  button.act{font-family:var(--sans);font-size:15px;font-weight:600;border-radius:9px;padding:12px 22px;
+    border:1px solid transparent;cursor:pointer;transition:transform .08s,background .15s,opacity .15s}
+  button.act:active{transform:translateY(1px)}
+  button.act:disabled{opacity:.5;cursor:not-allowed}
+  .btn-go{background:var(--accent);color:#04130f}
+  .btn-go:hover:not(:disabled){background:#74f0d3}
+  .btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+  .btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  #status{margin-top:18px;font-family:var(--mono);font-size:13.5px;min-height:20px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:middle}
+  .spin{animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:.25}}
+  .stat-row{display:flex;gap:24px;margin:18px 0 6px;flex-wrap:wrap}
+  .stat{font-family:var(--mono)}
+  .stat b{font-size:26px;color:var(--accent);font-weight:700}
+  .stat span{display:block;font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+  .warns{margin-top:14px}
+  .warn-item{background:rgba(255,180,84,.08);border:1px solid rgba(255,180,84,.25);color:#ffd79b;
+    border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;margin-top:18px;font-size:13.5px}
+  th{text-align:left;color:var(--muted);font-family:var(--mono);font-weight:500;font-size:11px;
+    letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--border)}
+  td{padding:10px;border-bottom:1px solid var(--surface-2);vertical-align:top}
+  tr:hover td{background:var(--surface-2)}
+  td a{color:var(--accent);text-decoration:none}
+  td a:hover{text-decoration:underline}
+  .empty{color:var(--muted);font-size:13px;padding:14px 0}
+  .tablewrap{overflow-x:auto}
+  footer{margin-top:34px;color:var(--muted);font-size:12px;line-height:1.7}
+  @media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="lang" role="group" aria-label="language">
+      <button id="langZh" class="active">中文</button>
+      <button id="langEn">EN</button>
+    </div>
+  </div>
+
+  <header>
+    <p class="eyebrow" data-i18n="eyebrow">Speaker Intel</p>
+    <h1 data-i18n="h1">展会嘉宾挖掘机</h1>
+    <p class="sub" data-i18n="sub">粘贴展会/会议网址，自动提取嘉宾的姓名、职位、公司、领英、邮箱，一键写入你的飞书表格。</p>
+  </header>
+
+  <div class="panel">
+    <label class="field" for="urlInput" data-i18n="label_url">展会网址</label>
+    <input id="urlInput" type="url" placeholder="https://example.com/speakers" autocomplete="off" spellcheck="false" />
+
+    <div class="opts">
+      <label class="chk"><input type="checkbox" id="optJina" /> <span data-i18n="opt_jina">JS 渲染</span><span class="hint" data-i18n="opt_jina_hint">（动态网站抓不到内容时打开，用 Jina 免费渲染）</span></label>
+      <label class="chk"><input type="checkbox" id="optDeep" /> <span data-i18n="opt_deep">深度扫描</span><span class="hint" data-i18n="opt_deep_hint">（进入每位嘉宾详情页找邮箱/领英，更准但更慢）</span></label>
+      <label class="chk"><input type="checkbox" id="optEnrich" /> <span data-i18n="opt_enrich">补全领英</span><span class="hint" data-i18n="opt_enrich_hint">（页面没领英时，用姓名+公司联网搜索，较慢）</span></label>
+      <label class="chk"><input type="checkbox" id="optPreview" /> <span data-i18n="opt_preview">仅预览</span><span class="hint" data-i18n="opt_preview_hint">（先看结果，不写入飞书）</span></label>
+    </div>
+
+    <div class="actions">
+      <button class="act btn-go" id="btnGo" data-i18n="btn_go">开始挖取</button>
+      <button class="act btn-ghost" id="btnCopy" disabled data-i18n="btn_copy">复制为表格</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <div class="panel" id="results" style="display:none">
+    <div class="stat-row">
+      <div class="stat"><b id="cFound">0</b><span data-i18n="stat_found">提取到</span></div>
+      <div class="stat"><b id="cWritten">0</b><span data-i18n="stat_written">已写入飞书</span></div>
+    </div>
+    <div class="warns" id="warns"></div>
+    <div class="tablewrap">
+      <table id="tbl">
+        <thead><tr>
+          <th data-i18n="th_name">姓名</th><th data-i18n="th_title">职位</th>
+          <th data-i18n="th_company">公司</th><th data-i18n="th_linkedin">领英</th><th data-i18n="th_email">邮箱</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <span data-i18n="footer1">数据来源于目标网站公开页面。请遵守目标网站的服务条款与当地隐私/反垃圾邮件法规（如 GDPR、CAN-SPAM），仅将抓取信息用于合规用途。</span><br>
+    <span data-i18n="footer2">部分网站靠 JavaScript 动态加载，简单抓取可能拿不到内容——此时换用嘉宾列表页直链，或开启「JS 渲染」/「深度扫描」。</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var ENDPOINT = '/.netlify/functions/scrape';
+  var lastSpeakers = [];
+  var lang = 'zh';
+
+  var I18N = {
+    zh: {
+      eyebrow: 'Speaker Intel', h1: '展会嘉宾挖掘机',
+      sub: '粘贴展会/会议网址，自动提取嘉宾的姓名、职位、公司、领英、邮箱，一键写入你的飞书表格。',
+      label_url: '展会网址',
+      opt_jina: 'JS 渲染', opt_jina_hint: '（动态网站抓不到内容时打开，用 Jina 免费渲染）',
+      opt_deep: '深度扫描', opt_deep_hint: '（进入每位嘉宾详情页找邮箱/领英，更准但更慢）',
+      opt_enrich: '补全领英', opt_enrich_hint: '（页面没领英时，用姓名+公司联网搜索，较慢）',
+      opt_preview: '仅预览', opt_preview_hint: '（先看结果，不写入飞书）',
+      btn_go: '开始挖取', btn_copy: '复制为表格', btn_copied: '已复制 ✓',
+      th_name: '姓名', th_title: '职位', th_company: '公司', th_linkedin: '领英', th_email: '邮箱',
+      stat_found: '提取到', stat_written: '已写入飞书', empty: '无数据',
+      footer1: '数据来源于目标网站公开页面。请遵守目标网站的服务条款与当地隐私/反垃圾邮件法规（如 GDPR、CAN-SPAM），仅将抓取信息用于合规用途。',
+      footer2: '部分网站靠 JavaScript 动态加载，简单抓取可能拿不到内容——此时换用嘉宾列表页直链，或开启「JS 渲染」/「深度扫描」。',
+      bad_url: '请输入有效网址（要带 http:// 或 https://）',
+      running_slow: '抓取中…（深度扫描/联网补领英会逐项访问，请稍候）',
+      running: '抓取并解析中…',
+      fail: '失败：', err: '请求出错：',
+      none: '没提取到嘉宾。看下方提示。',
+      preview_done: function (n) { return '预览完成：提取到 ' + n + ' 位（未写入飞书）'; },
+      done: function (n) { return '完成：' + n + ' 位已写入飞书 ✓'; },
+      partial: function (f, w) { return '提取到 ' + f + ' 位，写入 ' + w + ' 位（部分未写入，见提示）'; }
+    },
+    en: {
+      eyebrow: 'Speaker Intel', h1: 'Conference Speaker Miner',
+      sub: 'Paste a conference URL to auto-extract speakers (name, title, company, LinkedIn, email) and write them straight to your Feishu table.',
+      label_url: 'Conference URL',
+      opt_jina: 'JS render', opt_jina_hint: '(turn on for dynamic sites; uses Jina free rendering)',
+      opt_deep: 'Deep scan', opt_deep_hint: '(visit each speaker detail page for email/LinkedIn; more accurate, slower)',
+      opt_enrich: 'Find LinkedIn', opt_enrich_hint: '(when missing, search the web by name+company; slower)',
+      opt_preview: 'Preview only', opt_preview_hint: '(see results without writing to Feishu)',
+      btn_go: 'Start mining', btn_copy: 'Copy as table', btn_copied: 'Copied ✓',
+      th_name: 'Name', th_title: 'Title', th_company: 'Company', th_linkedin: 'LinkedIn', th_email: 'Email',
+      stat_found: 'Extracted', stat_written: 'Written to Feishu', empty: 'No data',
+      footer1: 'Data comes from public pages of the target site. Follow the site\u2019s terms and local privacy/anti-spam laws (e.g. GDPR, CAN-SPAM); use the data only for compliant purposes.',
+      footer2: 'Some sites load content via JavaScript and simple fetching may return nothing \u2014 use the direct speakers-list URL, or enable \u201CJS render\u201D / \u201CDeep scan\u201D.',
+      bad_url: 'Please enter a valid URL (must start with http:// or https://)',
+      running_slow: 'Working\u2026 (deep scan / LinkedIn lookup visits pages one by one, please wait)',
+      running: 'Fetching and parsing\u2026',
+      fail: 'Failed: ', err: 'Request error: ',
+      none: 'No speakers found. See notes below.',
+      preview_done: function (n) { return 'Preview done: extracted ' + n + ' (not written to Feishu)'; },
+      done: function (n) { return 'Done: ' + n + ' written to Feishu \u2713'; },
+      partial: function (f, w) { return 'Extracted ' + f + ', wrote ' + w + ' (some not written, see notes)'; }
+    }
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function T() { return I18N[lang]; }
+
+  function applyLang(next) {
+    lang = next;
+    document.documentElement.lang = (lang === 'en') ? 'en' : 'zh-CN';
+    $('langZh').classList.toggle('active', lang === 'zh');
+    $('langEn').classList.toggle('active', lang === 'en');
+    var dict = T();
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (dict[k] && typeof dict[k] === 'string') el.textContent = dict[k];
+    });
+    // 已有结果时刷新表头空态文案
+    if (lastSpeakers.length === 0) {
+      var tb = $('tbl').querySelector('tbody');
+      if (tb.querySelector('.empty')) tb.querySelector('.empty').textContent = dict.empty;
+    }
+  }
+
+  function setStatus(html, kind) {
+    var colors = { run: 'var(--accent)', ok: 'var(--accent)', warn: 'var(--warn)', err: 'var(--danger)' };
+    var c = colors[kind] || 'var(--muted)';
+    var spin = kind === 'run' ? ' spin' : '';
+    $('status').innerHTML = '<span class="dot' + spin + '" style="background:' + c + '"></span><span style="color:' + c + '">' + html + '</span>';
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function showResults(data) {
+    $('results').style.display = 'block';
+    $('cFound').textContent = data.found || 0;
+    $('cWritten').textContent = data.written || 0;
+
+    var warns = $('warns');
+    warns.innerHTML = '';
+    (data.warnings || []).forEach(function (w) {
+      var d = document.createElement('div'); d.className = 'warn-item'; d.textContent = w; warns.appendChild(d);
+    });
+
+    var tb = $('tbl').querySelector('tbody');
+    tb.innerHTML = '';
+    if (!lastSpeakers.length) {
+      tb.innerHTML = '<tr><td colspan="5" class="empty">' + T().empty + '</td></tr>';
+      $('btnCopy').disabled = true;
+      return;
+    }
+    lastSpeakers.forEach(function (s) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + esc(s.name) + '</td>' +
+        '<td>' + esc(s.title) + '</td>' +
+        '<td>' + esc(s.company) + '</td>' +
+        '<td>' + (s.linkedin ? '<a href="' + esc(s.linkedin) + '" target="_blank" rel="noopener">LinkedIn \u2197</a>' : '\u2014') + '</td>' +
+        '<td>' + (s.email ? '<a href="mailto:' + esc(s.email) + '">' + esc(s.email) + '</a>' : '\u2014') + '</td>';
+      tb.appendChild(tr);
+    });
+    $('btnCopy').disabled = false;
+  }
+
+  function run() {
+    var url = $('urlInput').value.trim();
+    if (!/^https?:\/\//i.test(url)) { setStatus(T().bad_url, 'err'); return; }
+
+    var deep = $('optDeep').checked;
+    var preview = $('optPreview').checked;
+    var forceJina = $('optJina').checked;
+    var enrich = $('optEnrich').checked;
+
+    $('btnGo').disabled = true;
+    $('btnCopy').disabled = true;
+    setStatus((deep || enrich) ? T().running_slow : T().running, 'run');
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ url: url, deepScan: deep, preview: preview, forceJina: forceJina, enrichLinkedin: enrich, lang: lang, maxDetailPages: 8 })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data.ok) { setStatus(T().fail + (data.error || ''), 'err'); return; }
+        lastSpeakers = data.speakers || [];
+        showResults(data);
+        if (data.found === 0) setStatus(T().none, 'warn');
+        else if (preview) setStatus(T().preview_done(data.found), 'ok');
+        else if (data.written === data.found) setStatus(T().done(data.written), 'ok');
+        else setStatus(T().partial(data.found, data.written), 'warn');
+      })
+      .catch(function (e) { setStatus(T().err + e.message, 'err'); })
+      .then(function () { $('btnGo').disabled = false; });
+  }
+
+  function copyTable() {
+    var dict = T();
+    var header = [dict.th_name, dict.th_title, dict.th_company, dict.th_linkedin, dict.th_email].join('\t');
+    var rows = lastSpeakers.map(function (s) { return [s.name, s.title, s.company, s.linkedin, s.email].join('\t'); });
+    navigator.clipboard.writeText([header].concat(rows).join('\n')).then(function () {
+      var b = $('btnCopy'); b.textContent = dict.btn_copied;
+      setTimeout(function () { b.textContent = T().btn_copy; }, 1500);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    $('langZh').addEventListener('click', function () { applyLang('zh'); });
+    $('langEn').addEventListener('click', function () { applyLang('en'); });
+    $('btnGo').addEventListener('click', run);
+    $('btnCopy').addEventListener('click', copyTable);
+    $('urlInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });
+    // 默认按浏览器语言：非中文环境显示英文
+    if ((navigator.language || '').toLowerCase().indexOf('zh') !== 0) applyLang('en');
+  });
+})();
+</script>
+</body>
+</html>
